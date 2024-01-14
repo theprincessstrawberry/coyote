@@ -1,111 +1,82 @@
----
-feature_name: Web Bluetooth / Battery Level (Async Await)
-chrome_version: 55
-check_min_version: true
-feature_id: 5264933985976320
-icon_url: icon.png
-index: index.html
----
-<img class="pageIcon" src="icon.png">
-<h1>Web Bluetooth / Coyote Sample</h1>
-<p class="availability">
-    Available in <a target="_blank" href="https://www.chromestatus.com/feature/5264933985976320">Chrome 55+</a> |
-    <a target="_blank" href="https://github.com/rezreal/pavlow3/web-bluetooth-example.html">View on GitHub</a>
-</p>
-<p>The <a href="https://developers.google.com/web/updates/2015/07/interact-with-ble-devices-on-the-web">Web Bluetooth
-        API</a> lets websites discover and communicate with devices over the
-    Bluetooth 4 wireless standard using the Generic Attribute Profile (GATT). It is
-    currently partially implemented in Android M, Chrome OS, Linux, and Mac.
-</p>
-<p>This sample illustrates the use of the Web Bluetooth API to interact with the Coyote device alert service.</p>
-<p><em>Note: During operation, the tab must stay in the foreground in order to keep sending the power levels. Otherwise
-        the device will stutter (background tabs can only "tick" once a second). This problem can be addressed using
-        web-workers.</em></p>
-<button id="pair">Pair with Coyote</button>
-<form>
-    <fieldset>
-        <legend>Status</legend>
-        <label for="battery_level">Battery Level</label>
-        <progress id="battery_level" value="0" max="100"></progress>
-        <input id="battery_level_text" disabled />
-        <label for="max_power">Max Power</label>
-        <input id="max_power" disabled value="?" />
-        <label for="power_step">Power Step</label>
-        <input id="power_step" disabled value="?" />
-        <br />
-        <label for="power_level_a">Power Level A</label>
-        <input id="power_level_a" min="0" value="0" max="2000" step="7" type="number" />
-        <progress id="power_level_a_progress" value="0" max="2000"></progress>
-        <br />
-        <label for="power_level_b">Power Level B</label>
-        <input id="power_level_b" min="0" value="0" max="2000" step="7" type="number" />
-        <progress id="power_level_b_progress" value="0" max="2000"></progress>
-        <br />
-        <button type="button" id="start" disabled="disabled">Start</button>
-        <button type="button" id="stop" disabled="disabled">Stop</button>
-    </fieldset>
-    <fieldset>
-        <legend>Pattern A</legend>
-        <label for="ax">Pulse Length (0-31 ms)</label>
-        <input id="ax" type="number" min="0" max="31" value="" placeholder="?" />
-        <label for="ay">Pause Length (0-1023 ms)</label>
-        <input id="ay" type="number" min="0" max="1024" step="10" value="" placeholder="?" />
-        <label for="az">Amplitude (0-31)</label>
-        <input id="az" type="number" min="0" max="31" value="" placeholder="?" />
-    </fieldset>
-    <fieldset>
-        <legend>Pattern B</legend>
-        <label for="bx">Pulse Length (0-31)</label>
-        <input id="bx" type="number" min="0" max="31" value="" placeholder="?" />
-        <label for="by">Pause Length (0-1023)</label>
-        <input id="by" type="number" min="0" max="1024" step="10" value="" placeholder="?" />
-        <label for="bz">Amplitude (0-31)</label>
-        <input id="bz" type="number" min="0" max="31" value="" placeholder="?" />
-    </fieldset>
-</form>
-<script>
-    var ChromeSamples = {
-        log: function () {
+<!doctype html>
+<html>
+<title>Coyote Bluetooth WIP</title>
 
-            var line = Array.prototype.slice.call(arguments).map(function (argument) {
-                return typeof argument === 'string' ? argument : JSON.stringify(argument);
-            }).join(' ');
+<body>
+    <img class="pageIcon" src="icon.png">
+    <h1>Web Bluetooth / Coyote Sample</h1>
+    <p class="availability">
+        Available in <a target="_blank" href="https://www.chromestatus.com/feature/5264933985976320">Chrome 55+</a> |
+        <a target="_blank" href="https://github.com/rezreal/pavlow3/web-bluetooth-example.html">View on GitHub</a>
+    </p>
+    <p>The <a href="https://developers.google.com/web/updates/2015/07/interact-with-ble-devices-on-the-web">Web
+            Bluetooth
+            API</a> lets websites discover and communicate with devices over the
+        Bluetooth 4 wireless standard using the Generic Attribute Profile (GATT). It is
+        currently partially implemented in Android M, Chrome OS, Linux, and Mac.
+    </p>
+    <p>This sample illustrates the use of the Web Bluetooth API to interact with the Coyote device alert service.</p>
+    <p><em>Note: During operation, the tab must stay in the foreground in order to keep sending the power levels.
+            Otherwise
+            the device will stutter (background tabs can only "tick" once a second). This problem can be addressed using
+            web-workers.</em></p>
+    <button id="pair">Pair with Coyote</button>
+    <form>
+        <fieldset>
+            <legend>Status</legend>
+            <label for="battery_level">Battery Level</label>
+            <progress id="battery_level" value="0" max="100"></progress>
+            <input id="battery_level_text" disabled />
+            <label for="max_power">Max Power</label>
+            <input id="max_power" disabled value="?" />
+            <label for="power_step">Power Step</label>
+            <input id="power_step" disabled value="?" />
+            <br />
+            <label for="power_level_a">Power Level A</label>
+            <input id="power_level_a" min="0" value="0" max="2000" step="7" type="number" />
+            <progress id="power_level_a_progress" value="0" max="2000"></progress>
+            <br />
+            <label for="power_level_b">Power Level B</label>
+            <input id="power_level_b" min="0" value="0" max="2000" step="7" type="number" />
+            <progress id="power_level_b_progress" value="0" max="2000"></progress>
+            <br />
+            <button type="button" id="start" disabled="disabled">Start</button>
+            <button type="button" id="stop" disabled="disabled">Stop</button>
+        </fieldset>
+        <fieldset>
+            <legend>Pattern A</legend>
+            <label for="ax">Pulse Length (0-31 ms)</label>
+            <input id="ax" type="number" min="0" max="31" value="" placeholder="?" />
+            <label for="ay">Pause Length (0-1023 ms)</label>
+            <input id="ay" type="number" min="0" max="1024" step="10" value="" placeholder="?" />
+            <label for="az">Amplitude (0-31)</label>
+            <input id="az" type="number" min="0" max="31" value="" placeholder="?" />
+        </fieldset>
+        <fieldset>
+            <legend>Pattern B</legend>
+            <label for="bx">Pulse Length (0-31)</label>
+            <input id="bx" type="number" min="0" max="31" value="" placeholder="?" />
+            <label for="by">Pause Length (0-1023)</label>
+            <input id="by" type="number" min="0" max="1024" step="10" value="" placeholder="?" />
+            <label for="bz">Amplitude (0-31)</label>
+            <input id="bz" type="number" min="0" max="31" value="" placeholder="?" />
+        </fieldset>
+    </form>
 
-            document.querySelector('#log').textContent += line + '\n';
-            const elem = document.getElementById('log');
-            elem.scrollTop = elem.scrollHeight;
-        },
+    <h3>Live Output</h3>
+    <div id="output" class="output">
+        <div id="content"></div>
+        <div id="status"></div>
+        <pre id="log"></pre>
+    </div>
+</body>
 
-        clearLog: function () {
-            document.querySelector('#log').textContent = '';
-        },
-
-        setStatus: function (status) {
-            document.querySelector('#status').textContent = status;
-        },
-
-        setContent: function (newContent) {
-            var content = document.querySelector('#content');
-            while (content.hasChildNodes()) {
-                content.removeChild(content.lastChild);
-            }
-            content.appendChild(newContent);
-        }
-
-    };
-</script>
-<h3>Live Output</h3>
-<div id="output" class="output">
-    <div id="content"></div>
-    <div id="status"></div>
-    <pre id="log"></pre>
-</div>
 <script>
     if (/Chrome\/(\d+\.\d+.\d+.\d+)/.test(navigator.userAgent)) {
         // Let's log a warning if the sample is not supposed to execute on this
         // version of Chrome.
         if (55 > parseInt(RegExp.$1)) {
-            ChromeSamples.setStatus('Warning! Keep in mind this sample has been tested with Chrome ' + 55 + '.');
+            log("Only tested on Chrome 55+")
         }
     }
 </script>
@@ -124,7 +95,6 @@ index: index.html
 
     document.querySelector('button#pair').addEventListener('click', () => {
         if (isWebBluetoothEnabled()) {
-            ChromeSamples.clearLog();
             onButtonClick();
         }
     });
@@ -169,7 +139,7 @@ index: index.html
         flipFirstAndThirdByte(dataView.buffer);
         // notify/write: 3 bytes: flipFirstAndThirdByte(zero(2) ~ uint(11).as("powerLevelB") ~uint(11).as("powerLevelA")
         const powerA = dataView.getUint16(0) >> 3 // push the remainder of B out of the first 2 bytes
-        const powerB = dataView.getUint16(1) & 0b0000011111111111  // push the remainder A out of the last 2 bytes
+        const powerB = dataView.getUint16(1) & 0b0000011111111111 // push the remainder A out of the last 2 bytes
         return [powerA, powerB]
     }
 
@@ -274,7 +244,6 @@ index: index.html
 
             const power = await service.getCharacteristic(powerCharacteristic);
 
-
             log('Read Power value...');
             const powerValue = await power.readValue();
             let [devicePowerA, devicePowerB] = parsePower(powerValue);
@@ -296,16 +265,10 @@ index: index.html
                 });
             await power.startNotifications();
 
-
-
-
-
             log('Getting Pattern Characteristics...');
-
 
             const patternA = await service.getCharacteristic(patternACharacteristic);
             const patternB = await service.getCharacteristic(patternBCharacteristic);
-
 
             log('Reading Pattern Characteristics...');
 
@@ -325,7 +288,6 @@ index: index.html
             document.querySelector('#bz').value = bz;
             log(`> Pattern B is at bx:${bx} ${by} bz:${bz}`);
 
-
             log('Getting Battery Service...');
             const battery = await server.getPrimaryService(batteryService);
 
@@ -335,7 +297,6 @@ index: index.html
 
                 log('Starting Battery Level Notifications...');
                 await batteryLevelCharacteristic.startNotifications();
-
 
                 log('Reading Battery Level...');
                 const value = await batteryLevelCharacteristic.readValue();
@@ -435,15 +396,25 @@ index: index.html
         }
     }
 
-    log = ChromeSamples.log;
-
     function isWebBluetoothEnabled() {
         if (navigator.bluetooth) {
             return true;
         } else {
-            ChromeSamples.setStatus('Web Bluetooth API is not available.\n' +
+            log('Web Bluetooth API is not available.\n' +
                 'Please make sure the "Experimental Web Platform features" flag is enabled.');
             return false;
         }
     }
+
+    function log() {
+        var line = Array.prototype.slice.call(arguments).map(function (argument) {
+            return typeof argument === 'string' ? argument : JSON.stringify(argument);
+        }).join(' ');
+
+        document.querySelector('#log').textContent += line + '\n';
+        const elem = document.getElementById('log');
+        elem.scrollTop = elem.scrollHeight;
+    }
 </script>
+
+</html>
